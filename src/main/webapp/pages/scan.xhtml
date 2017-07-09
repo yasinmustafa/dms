@@ -1,0 +1,117 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="/pages/template.xhtml">
+	<ui:define name="main">
+		<h:form id="autoScan">
+			<p:commandButton value="Auto scan all documents" id="autoScanBtn"
+					actionListener="#{scanView.autoScan}"
+					update=":documentForm:dTable" />
+			<p:blockUI block=":entirePage" trigger="autoScanBtn">
+						<p>Processing..</p>
+						<p:graphicImage value="/resources/images/ajax-loader.gif"/>  
+					</p:blockUI>
+		</h:form>
+		<h:form id="documentForm" prependId="false">
+			<p:dataTable id="dTable" 
+				widgetVar="dTableWidget" 
+				var="scanDocument"
+				value="#{scanView.scanDocuments}" 
+				rowKey="#{scanDocument.docTitle}"
+				sortBy="#{scanDocument.docTitle}"
+				sortOrder="descending"
+				resizableColumns="true"
+				emptyMessage="No documents to process"
+				selectionMode="single" 
+				style="width:60%"
+				selection="#{scanView.scanDocument}"
+				rows="20"
+                paginator="true"
+                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                rowsPerPageTemplate="20,50,100">
+				<p:column headerText="title"  
+					sortBy="#{scanDocument.docTitle}">
+					<h:outputText value="#{scanDocument.docTitle}" />
+				</p:column>
+				<p:column headerText="Save" style="width:5%">
+					<p:commandLink update=":dialogForm:panelGrid"
+						styleClass="ui-icon ui-icon-folder-open"
+						title="Save"
+						oncomplete="PF('store').show()">
+						<f:setPropertyActionListener value="#{scanDocument}"
+							target="#{scanView.scanDocument}" />
+					</p:commandLink>
+				</p:column>
+				<p:column headerText="View" style="width:5%">
+    				<p:commandLink ajax="false" 
+    					styleClass="ui-icon ui-icon-document"
+						title="Open"
+        				actionListener="#{scanView.openDocument(scanDocument)}">
+        				<p:fileDownload value="#{scanView.file}" />
+					</p:commandLink>	
+				</p:column>
+				<p:ajax event="rowSelect" update=":dialogForm:panelGrid" />
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog id="storeDialog" dynamic="true" header="Store Document"
+			widgetVar="store" showEffect="explode" hideEffect="bounce">
+			<h:form id="dialogForm">
+				<p:panelGrid id="panelGrid" columns="2">
+					<f:facet name="header">
+						<p:row>
+							<p:column colspan="2">Document Details</p:column>
+						</p:row>
+					</f:facet>
+					<p:outputLabel value="Document Title" />
+					<p:outputLabel value="#{scanView.scanDocument.docTitle}" />
+
+					<p:outputLabel for="type" value="Type: " />
+					<p:selectOneMenu id="type" value="#{scanView.scanDocument.type}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{refDataView.types}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="personFrom" value="From: " />
+					<p:selectOneMenu id="personFrom"
+						value="#{scanView.scanDocument.personFrom}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{refDataView.peopleAndCompanies}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="personTo" value="To: " />
+					<p:selectOneMenu id="personTo"
+						value="#{scanView.scanDocument.personTo}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{refDataView.peopleAndCompanies}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="dateOnLetter" value="Date on Letter:" />
+					<p:calendar id="dateOnLetter"
+						value="#{scanView.scanDocument.dateOnLetter}"></p:calendar>
+
+					<p:outputLabel for="comments" value="Comments:" />
+					<p:inputTextarea id="comments"
+						value="#{scanView.scanDocument.comment}" rows="5" cols="30"
+						counter="display" maxlength="75"
+						counterTemplate="{0} characters remaining." autoResize="false" />
+					
+					<p:outputLabel id="display2" />
+					<p:outputLabel id="display" />
+					
+					<p:commandButton value="Save" id="saveScan"
+						actionListener="#{scanView.storeDocument}" update=":documentForm"
+						oncomplete="PF('store').hide()" />
+					<p:blockUI block="panelGrid" trigger="saveScan">
+						<p>Saving..</p>
+						<p:graphicImage value="/resources/images/ajax-loader.gif"/>  
+					</p:blockUI>
+
+				</p:panelGrid>
+			</h:form>
+			
+
+		</p:dialog>
+	</ui:define>
+</ui:composition>

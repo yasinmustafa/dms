@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+.ui-dialog {
+    width: auto !important;
+}
+
+.ui-toolbar .ui-separator { 
+   background: #A8A8A8; 
+   border: none; 
+   width: 1px; 
+   clear: none; 
+   height: 22px; 
+   margin: 8px 12px 0; 
+   box-shadow: none; 
+}
+
+.hide {
+	display:none;
+	visibility:hidden;
+}
+
+.viewIcon {
+   background-image: url('/images/icons/view.png') !important;
+   background-position: 0 0 !important;
+}
+
+.updateIcon { 
+	background-image: url('/images/icons/green-update-button-md.png')!important;
+   	background-position: 0 0 !important;
+}
+
+.panelGridCenter {
+    margin: 0 auto;
+}
+
+.centered {
+	position: absolute;
+	height: 100px;
+	top: 0;
+	bottom: 0;
+	margin:auto;
+}

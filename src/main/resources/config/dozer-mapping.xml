@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+          
+    <mapping map-empty-string="false">
+        <class-a>com.dms.model.entity.LetterText</class-a>
+        <class-b>com.dms.model.domain.LetterTextDomain</class-b>
+        <field>
+            <a>letter.letId</a>
+            <b>letId</b>
+        </field>
+    </mapping>
+    <mapping map-empty-string="false">
+        <class-a>com.dms.model.entity.Letter</class-a>
+        <class-b>com.dms.model.domain.LetterDomain</class-b>
+        <field>
+            <a>document.id</a>
+            <b>documentId</b>
+        </field>
+    </mapping>
+</mappings>          

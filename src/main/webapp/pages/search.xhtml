@@ -1,0 +1,280 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/pages//template.xhtml">
+	<ui:define name="main">
+
+		<h:form id="searchParams">
+			<p:panelGrid style="margin-top:20px">
+				<f:facet name="header">
+
+					<p:row>
+						<p:column colspan="2">Id</p:column>
+						<p:column colspan="2">Date on Letter</p:column>
+						<p:column colspan="2">Date Stored</p:column>
+					</p:row>
+
+				</f:facet>
+				<p:row>
+					<p:column style="font-weight: bold;">From</p:column>
+					<p:column style="font-weight: bold;">To</p:column>
+
+					<p:column style="font-weight: bold;">From</p:column>
+					<p:column style="font-weight: bold;">To</p:column>
+
+					<p:column style="font-weight: bold;">From</p:column>
+					<p:column style="font-weight: bold;">To</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:spinner id="idFrom" value="#{searchView.searchParams.idFrom}"></p:spinner>
+					</p:column>
+
+					<p:column>
+						<p:spinner id="idTo" value="#{searchView.searchParams.idTo}"></p:spinner>
+					</p:column>
+
+					<p:column>
+						<p:calendar id="dateOnLetterFrom"
+							value="#{searchView.searchParams.from}"></p:calendar>
+					</p:column>
+
+					<p:column>
+						<p:calendar id="dateOnLetterTo"
+							value="#{searchView.searchParams.to}"></p:calendar>
+					</p:column>
+
+					<p:column>
+						<p:calendar id="indexFrom"
+							value="#{searchView.searchParams.indexedFrom}"></p:calendar>
+					</p:column>
+
+					<p:column>
+						<p:calendar id="indexTo"
+							value="#{searchView.searchParams.indexedTo}"></p:calendar>
+					</p:column>
+				</p:row>
+
+
+			</p:panelGrid>
+			<h:panelGrid id="grid" cellpadding="5" columns="5"
+				style="margin-bottom:10px">
+				<f:facet name="header">
+					<p:messages id="msgs" />
+				</f:facet>
+				<p:outputLabel for="type" value="Type: " />
+				<p:selectOneMenu id="type" value="#{searchView.searchParams.type}">
+					<f:selectItem itemLabel="Select One" itemValue="" />
+					<f:selectItems value="#{refDataView.types}" />
+				</p:selectOneMenu>
+				<p:outputLabel />
+				<p:outputLabel />
+				<p:outputLabel />
+
+				<p:outputLabel for="personFrom" value="From: " />
+				<p:selectOneMenu id="personFrom"
+					value="#{searchView.searchParams.personFrom}">
+					<f:selectItem itemLabel="Select One" itemValue="" />
+					<f:selectItems value="#{refDataView.peopleAndCompanies}" />
+				</p:selectOneMenu>
+				<p:outputLabel />
+				<p:outputLabel />
+				<p:outputLabel />
+
+				<p:outputLabel for="personTo" value="To: " />
+				<p:selectOneMenu id="personTo"
+					value="#{searchView.searchParams.personTo}">
+					<f:selectItem itemLabel="Select One" itemValue="" />
+					<f:selectItems value="#{refDataView.peopleAndCompanies}" />
+				</p:selectOneMenu>
+				<p:outputLabel />
+				<p:outputLabel />
+				<p:outputLabel />
+
+				<p:outputLabel for="comments" value="Comments:" />
+				<p:inputText id="comments"
+					value="#{searchView.searchParams.comment}" />
+				<p:outputLabel />
+				<p:outputLabel />
+				<p:outputLabel />
+
+				<p:outputLabel for="text" value="Letter Text:" />
+				<p:inputText id="text"
+					value="#{searchView.searchParams.letterTextSearch}" />
+				<p:outputLabel />
+				<p:outputLabel />
+				<p:outputLabel />
+
+				<p:outputLabel />
+				<p:commandButton value="Search" id="searchDocuments"
+					actionListener="#{searchView.search}"
+					update=":searchResults:searchResultsTable" />
+				<p:commandButton value="Clear" id="clearSearch"
+					actionListener="#{searchView.clear}"
+					update=":searchParams,:searchResults:searchResultsTable" />
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="searchResults">
+			<p:dataTable id="searchResultsTable" 
+				var="documentDetail"
+				widgetVar="searchTable" 
+				value="#{searchView.documentDetails}"
+				rowKey="#{documentDetail.id}" 
+				selectionMode="single"
+				selection="#{searchView.documentDetail}"
+				sortBy="#{documentDetail.id}" 
+				sortOrder="descending"
+				resizableColumns="true"
+				style="width:95%"
+				emptyMessage="No documents found with given criteria"
+				filteredValue="#{searchView.filteredDocumentDetails}" rows="20"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="20,50,100">
+
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Search all fields:" />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('searchTable').filter()" sstyle="width:95%"
+							placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="Id" sortBy="#{documentDetail.id}" style="width:5%"
+					filterStyleClass="hide"
+					filterBy="#{documentDetail.id}" 
+					filterMatchMode="contains">
+					<h:outputText value="#{documentDetail.id}" />
+				</p:column>
+
+				<p:column headerText="Date on Letter"
+					sortBy="#{documentDetail.dateOnLetter}" style="width:10%"
+					filterStyleClass="hide"
+					filterBy="#{documentDetail.dateOnLetter}" 
+					filterMatchMode="contains">
+					<h:outputText value="#{documentDetail.dateOnLetter}">
+						<f:convertDateTime pattern="dd MMM yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Date Stored"
+					sortBy="#{documentDetail.indexedDate}" style="width:10%"
+					filterStyleClass="hide"
+					filterBy="#{documentDetail.indexedDate}" 
+					filterMatchMode="contains">
+					<h:outputText value="#{documentDetail.indexedDate}">
+						<f:convertDateTime pattern="dd MMM yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="From" sortBy="#{documentDetail.perFromName}" style="width:10%"
+					filterStyleClass="hide"
+					filterBy="#{documentDetail.perFromName}" 
+					filterMatchMode="contains">
+					<h:outputText value="#{documentDetail.perFromName}" />
+				</p:column>
+
+				<p:column headerText="To" sortBy="#{documentDetail.perToName}" style="width:10%"
+					filterStyleClass="hide"
+					filterBy="#{documentDetail.perToName}" 
+					filterMatchMode="contains">
+					<h:outputText value="#{documentDetail.perToName}" />
+				</p:column>
+
+				<p:column headerText="Type" sortBy="#{documentDetail.typName}" style="width:10%"
+					filterStyleClass="hide"
+					filterBy="#{documentDetail.typName}" 
+					filterMatchMode="contains">
+					<h:outputText value="#{documentDetail.typName}" />
+				</p:column>
+
+				<p:column headerText="Comments" 
+					sortBy="#{documentDetail.comText}"
+					filterStyleClass="hide"
+					filterBy="#{documentDetail.comText}" 
+					filterMatchMode="contains">
+					<h:outputText value="#{documentDetail.comText}" />
+				</p:column>
+				<p:column headerText="Edit" style="width:5%">
+					<p:commandLink update=":dialogForm:panelGrid"
+						styleClass="ui-icon ui-icon-folder-open"
+						title="Edit"
+						oncomplete="PF('update').show()">
+						<f:setPropertyActionListener value="#{documentDetail}"
+							target="#{searchView.documentDetail}" />
+					</p:commandLink>
+				</p:column>
+				<p:column headerText="Open" style="width:5%">
+					<p:commandLink ajax="false" 
+						styleClass="ui-icon ui-icon-document"
+						title="Open"
+						actionListener="#{searchView.openDocument(documentDetail)}">
+						<p:fileDownload value="#{searchView.file}" />
+					</p:commandLink>
+				</p:column>
+				<p:ajax event="rowSelect" update=":dialogForm:panelGrid" />
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog id="updateDialog" dynamic="true" header="Update Document"
+			widgetVar="update" showEffect="explode" hideEffect="bounce">
+			<h:form id="dialogForm">
+				<p:panelGrid id="panelGrid" columns="2">
+					<f:facet name="header">
+						<p:row>
+							<p:column colspan="2">Document Details</p:column>
+						</p:row>
+					</f:facet>
+
+					<p:outputLabel for="type" value="Type: " />
+					<p:selectOneMenu id="type"
+						value="#{searchView.documentDetail.typId}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{refDataView.types}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="personFrom" value="From: " />
+					<p:selectOneMenu id="personFrom"
+						value="#{searchView.documentDetail.perFromId}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{refDataView.peopleAndCompanies}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="personTo" value="To: " />
+					<p:selectOneMenu id="personTo"
+						value="#{searchView.documentDetail.perToId}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{refDataView.peopleAndCompanies}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="dateOnLetter" value="Date on Letter:" />
+					<p:calendar id="dateOnLetter"
+						value="#{searchView.documentDetail.dateOnLetter}"></p:calendar>
+
+					<p:outputLabel for="comments" value="Comments:" />
+					<p:inputTextarea id="comments"
+						value="#{searchView.documentDetail.comText}" rows="5" cols="30"
+						counter="display" maxlength="75"
+						counterTemplate="{0} characters remaining." autoResize="false" />
+
+					<p:outputLabel id="display2" />
+					<p:outputLabel id="display" />
+
+					<p:commandButton value="Save" id="saveScan"
+						actionListener="#{searchView.storeDocument}"
+						update=":searchResults" oncomplete="PF('update').hide()" />
+					<p:blockUI block="panelGrid" trigger="saveScan">
+						<p>Saving..</p>
+						<p:graphicImage value="/resources/images/ajax-loader.gif" />
+					</p:blockUI>
+
+				</p:panelGrid>
+			</h:form>
+
+		</p:dialog>
+	</ui:define>
+</ui:composition>
